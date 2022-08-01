@@ -39,55 +39,55 @@ class PiecesController {
         switch (type) {
             case "pawn":
                 if (color === "black") {
-                    piece = new Pawn("Peão preto", "/images/black/black_pawn.png", color, square, window.board, this);
+                    piece = new Pawn("Peão preto", "images/black/black_pawn.png", color, square, window.board, this);
                 }
                 if (color === "white") {
-                    piece = new Pawn("Peão branco", "/images/white/white_pawn.png", color, square, window.board, this);
+                    piece = new Pawn("Peão branco", "images/white/white_pawn.png", color, square, window.board, this);
                 }
                 this.pieces.push(piece)
                 return piece;
             case "rook":
                 if (color === "black") {
-                    piece = new Rook("Torre preta", "/images/black/black_rook.png", color, square, window.board, this);
+                    piece = new Rook("Torre preta", "images/black/black_rook.png", color, square, window.board, this);
                 }
                 if (color === "white") {
-                    piece = new Rook("Torre branca", "/images/white/white_rook.png", color, square, window.board, this);
+                    piece = new Rook("Torre branca", "images/white/white_rook.png", color, square, window.board, this);
                 }
                 this.pieces.push(piece)
                 return piece;
             case "horse":
                 if (color === "black") {
-                    piece = new Horse("Cavalo preto", "/images/black/black_horse.png", color, square, window.board, this);
+                    piece = new Horse("Cavalo preto", "images/black/black_horse.png", color, square, window.board, this);
                 }
                 if (color === "white") {
-                    piece = new Horse("Cavalo branco", "/images/white/white_horse.png", color, square, window.board, this);
+                    piece = new Horse("Cavalo branco", "images/white/white_horse.png", color, square, window.board, this);
                 }
                 this.pieces.push(piece)
                 return piece;
             case "bishop":
                 if (color === "black") {
-                    piece = new Bishop("Bispo preto", "/images/black/black_bishop.png", color, square, window.board, this);
+                    piece = new Bishop("Bispo preto", "images/black/black_bishop.png", color, square, window.board, this);
                 }
                 if (color === "white") {
-                    piece = new Bishop("Bispo branco", "/images/white/white_bishop.png", color, square, window.board, this);
+                    piece = new Bishop("Bispo branco", "images/white/white_bishop.png", color, square, window.board, this);
                 }
                 this.pieces.push(piece)
                 return piece;
             case "queen":
                 if (color === "black") {
-                    piece = new Queen("Rainha preta", "/images/black/black_queen.png", color, square, window.board, this);
+                    piece = new Queen("Rainha preta", "images/black/black_queen.png", color, square, window.board, this);
                 }
                 if (color === "white") {
-                    piece = new Queen("Rainha branca", "/images/white/white_queen.png", color, square, window.board, this);
+                    piece = new Queen("Rainha branca", "images/white/white_queen.png", color, square, window.board, this);
                 }
                 this.pieces.push(piece)
                 return piece;
             case "king":
                 if (color === "black") {
-                    piece = new King("Rei preto", "/images/black/black_king.png", color, square, window.board, this);
+                    piece = new King("Rei preto", "images/black/black_king.png", color, square, window.board, this);
                 }
                 if (color === "white") {
-                    piece = new King("Rei branco", "/images/white/white_king.png", color, square, window.board, this);
+                    piece = new King("Rei branco", "images/white/white_king.png", color, square, window.board, this);
                 }
                 this.pieces.push(piece)
                 return piece;
