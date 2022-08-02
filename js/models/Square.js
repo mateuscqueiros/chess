@@ -17,31 +17,60 @@ class Square {
 
         this.element.addEventListener("click", e => {
 
-            if (window.selected) {
+            if (this.board.selected) {
                 if (this.isHighlighted || this.isCaptureHighlighted) {
                     if (this.isCaptureHighlighted) {
-                        // Capturar
-                        window.selected.piece.moveTo(this.column, this.row);
-                        this.controller.turnHighlightOff();
-                        window.selected = null;
+                        // Captura
+                        if (
+                            this.board.selected.piece.type === "pawn" // É peão que está atacando?
+                            && !this.controller.findByPosition(this.column, this.row - 1)?.piece // Existem peças no destino?
+                            && this.piece.type === "pawn" // A peça na casa atacada é peão?
+                            && this.piece.square.row === this.board.selected.piece.square.row // A peça atacada está ao lado?
+                            && this.board.selected.piece.color === 'white') { // A peça é branca?
+                            // en passant branco
+                            this.board.selected.piece.capturePieceAt(this.column, this.row);
+                            this.board.selected.piece.moveTo(this.column, this.row - 1);
+                            this.controller.turnHighlightOff();
+                        } else if (
+                            this.board.selected.piece.type === "pawn" // É peão que está atacando?
+                            && !this.controller.findByPosition(this.column, this.row + 1)?.piece // Existem peças no destino?
+                            && this.piece.type === "pawn" // A peça na casa atacada é peão?
+                            && this.piece.square.row === this.board.selected.piece.square.row // A peça atacada está ao lado?
+                            && this.board.selected.piece.color === 'black') {
+                            // en passant preto
+                            this.board.selected.piece.capturePieceAt(this.column, this.row);
+                            this.board.selected.piece.moveTo(this.column, this.row + 1);
+                            this.controller.turnHighlightOff();
+                        } else {
+                            this.board.selected.piece.moveTo(this.column, this.row);
+                            this.controller.turnHighlightOff();
+                            this.board.selected = null;
+                        }
+
                     } else {
                         // Mover
-                        window.selected.piece.moveTo(this.column, this.row);
+                        this.board.selected.piece.moveTo(this.column, this.row);
                         this.controller.turnHighlightOff();
-                        window.selected = null;
+                        this.board.selected = null;
+                    }
+                } else {
+                    if (this.piece) {
+                        this.board.selected = this;
+                        this.controller.turnHighlightOff();
+                        this.addHighlight()
+                        this.piece.highlightMovement();
                     }
                 }
             } else {
                 if (this.piece) {
                     // Selecionar
-                    window.selected = this;
+                    this.board.selected = this;
                     this.controller.turnHighlightOff();
                     this.addHighlight()
                     this.piece.highlightMovement();
                 } else {
                     // Desselecionar
-                    console.log("Desseleção")
-                    window.selected = null;
+                    this.board.selected = null;
                     this.controller.turnHighlightOff();
                 }
             }
@@ -51,7 +80,7 @@ class Square {
     toNotation() {
         const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
-        return `${letters[this.coords[0]]}${this.coords[1] + 1}`;
+        return `${letters[this.column]}${7 - this.row + 1}`;
     }
 
     selectElement() {
