@@ -97,11 +97,6 @@ class PiecesController {
 
 class PiecesMovements {
     static pawn = (self) => {
-        // Verificar se está na primeira fileira
-        // Se tiver casa diagonal para captura destacar
-        // Mover uma se não tiver
-        // Promover se chegar ao final
-        // en passant
 
         let c = self.square.column;
         let r = self.square.row;
@@ -118,47 +113,60 @@ class PiecesMovements {
             var s3 = 1;
         }
 
+        // Fileira a frente não tem peça
         let r1 = !self.squareAt(c, s1)?.piece;
+        // Fileira duas a frente não tem peça
         let r2 = !self.squareAt(c, s2)?.piece;
 
         if (r === s3) {
+            // Está na primeira linha
             if (r1) {
-                self.squareAt(c, s1).addHighlight();
+                // Movimento único
+                self.movements.push(self.squareAt(c, s1));
             }
-            if (r2 && r1) {
-                self.squareAt(c, s2).addHighlight();
+            if (r1 && r2) {
+                // Movimento inicial duplo
+                self.movements.push(self.squareAt(c, s2));
             }
         } else {
-            if (r1 && self.squareAt(c, r - 1)) {
-                self.squareAt(c, s1).addHighlight();
+            // Não está na primeira fileira
+            if (r1 && self.squareAt(c, s1)) {
+                self.movements.push(self.squareAt(c, s1));
             }
         }
 
+        // Quadrado ao lado e a frente
         let r3Side1 = self.squareAt(c + 1, s1);
+        // Quadrado ao lado e a frente
         let r3Side2 = self.squareAt(c - 1, s1);
+        //Quadrado ao lado
         let r4Side1 = self.squareAt(c + 1, r);
+        // Quadrado ao lado
         let r4Side2 = self.squareAt(c - 1, r);
 
-        r3Side1?.piece && r3Side1.piece?.color !== self.color ? r3Side1.addCapture() : null;
-        r3Side2?.piece && r3Side2.piece?.color !== self.color ? r3Side2.addCapture() : null;
+        // 
+        r3Side1?.piece && r3Side1.piece?.color !== self.color ? self.movements.push(r3Side1) : null;
+        r3Side2?.piece && r3Side2.piece?.color !== self.color ? self.movements.push(r3Side2) : null;
 
         if (r4Side1?.piece && r4Side1.piece?.color !== self.color && r4Side1?.piece?.type === "pawn" && !r3Side1?.piece) {
-            r4Side1.addCapture()
+            console.log("000")
+            self.movements.push(r4Side1)
         }
 
         if (r4Side2?.piece && r4Side2.piece?.color !== self.color && r4Side2.piece?.type === "pawn" && !r3Side2.piece) {
-            r4Side2.addCapture()
+            self.movements.push(r4Side2)
         }
+
 
         // Marcar peão como capturada
         // Zerar square
         // Mover para nova casa
     }
     static queen = (self) => {
-        self.controller.turnHighlightOff();
-        self.square.toggleHighlight();
+
     }
     static horse = (self) => {
+        self.movements = [];
         let c = self.square.column;
         let r = self.square.row;
         let p = [
@@ -179,18 +187,18 @@ class PiecesMovements {
                 positions.push(pos)
             }
         })
-
         for (let p = 0; p < positions.length; p++) {
             let pos = positions[p]
             if (pos.piece?.color !== self.color) {
                 // O square existe
-                if (pos.piece && pos.piece.color !== self.color) {
-                    // Se existir e forem de cores diferentes
-                    pos.addCapture();
-                } else {
-                    // Casa vazia
-                    pos.addHighlight();
-                }
+                self.movements.push(pos);
+                // if (pos.piece && pos.piece.color !== self.color) {
+                //     // Se existir e forem de cores diferentes
+                //     pos.addCapture();
+                // } else {
+                //     // Casa vazia
+                //     pos.addHighlight();
+                // }
             }
         }
     }
@@ -217,17 +225,27 @@ class Piece {
         this.square.piece = this;
         this.isCaptured = false;
         this.hasMoved = false;
-
-
-        let f = e => {
-            this.square.toggleHighlight();
-        }
-        this.clickEvent = f;
-
-        // this.addEvents(f);
-        // this.removeEvents(f);
+        this.movements = [];
 
         this.square.isOcuppied = true;
+        this.movements = [];
+    }
+
+    highlightMovement() {
+
+        if (this.movements.length > 0) {
+            this.movements.forEach(mov => {
+                if (mov.piece) {
+                    // Se existir e forem de cores diferentes
+                    if (mov.piece.color !== this.color) {
+                        mov.addCapture();
+                    }
+                } else {
+                    // Casa vazia
+                    mov.addHighlight();
+                }
+            })
+        }
     }
 
     squareAt(x, y) {
@@ -253,17 +271,23 @@ class Piece {
         this.hasMoved = true;
         if (newSquare.piece) {
             // Tem peça amiga
-            if (newSquare.piece?.color === this.color) {
-
-            } else {
+            if (newSquare.piece?.color !== this.color) {
                 this.capturePieceAt(x, y);
                 this.moveTo(x, y);
+                this.controller.pieces.forEach(piece => {
+                    piece.movements = [];
+                    piece.calculateMovements(this);
+                })
             }
         } else {
             // Não tem peça
             this.square.removePiece();
             this.square = newSquare;
             this.square.addPiece(this, this.image);
+            this.controller.pieces.forEach(piece => {
+                piece.movements = [];
+                piece.calculateMovements(this)
+            })
         }
         if (this.type === "pawn") {
             if (this.color === "white" && this.square.row === 0) {
@@ -281,12 +305,15 @@ class Piece {
         captured.removePiece();
     }
 
+
 }
 
 class Queen extends Piece {
     constructor(pieceName, img, color, square, board, controller) {
         super(pieceName, img, color, square, board, controller);
-        this.highlightMovement = () => PiecesMovements.queen(this);
+        this.calculateMovements = () => PiecesMovements.queen(this);
+        this.calculateMovements(this);
+
     }
     // highlightMovement() {
     //     this.controller.turnHighlightOff();
@@ -298,7 +325,8 @@ class Horse extends Piece {
     constructor(pieceName, img, color, square, board, controller) {
         super(pieceName, img, color, square, board, controller);
 
-        this.highlightMovement = () => PiecesMovements.horse(this);
+        this.calculateMovements = () => PiecesMovements.horse(this);
+        this.calculateMovements(this);
 
     }
 }
@@ -307,7 +335,8 @@ class Pawn extends Piece {
     constructor(pieceName, img, color, square, board, controller) {
         super(pieceName, img, color, square, board, controller);
         this.type = "pawn";
-        this.highlightMovement = () => PiecesMovements.pawn(this);
+        this.calculateMovements = () => PiecesMovements.pawn(this);
+        this.calculateMovements(this);
 
     }
     promote() {
@@ -318,21 +347,24 @@ class Pawn extends Piece {
 class Rook extends Piece {
     constructor(pieceName, img, color, square, board, controller) {
         super(pieceName, img, color, square, board, controller);
-        this.highlightMovement = () => PiecesMovements.pawn(this);
+        this.calculateMovements = () => PiecesMovements.rook(this);
+        this.calculateMovements(this);
     }
 }
 
 class Bishop extends Piece {
     constructor(pieceName, img, color, square, board, controller) {
         super(pieceName, img, color, square, board, controller);
-        this.highlightMovement = () => PiecesMovements.pawn(this);
+        this.calculateMovements = () => PiecesMovements.bishop(this);
+        this.calculateMovements(this);
     }
 }
 
 class King extends Piece {
     constructor(pieceName, img, color, square, board, controller) {
         super(pieceName, img, color, square, board, controller);
-        this.highlightMovement = () => PiecesMovements.pawn(this);
+        this.calculateMovements = () => PiecesMovements.king(this);
+        this.calculateMovements(this);
     }
 }
 

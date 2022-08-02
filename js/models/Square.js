@@ -57,8 +57,10 @@ class Square {
                     if (this.piece) {
                         this.board.selected = this;
                         this.controller.turnHighlightOff();
-                        this.addHighlight()
+                        this.addHighlight();
                         this.piece.highlightMovement();
+                    } else {
+                        this.controller.turnHighlightOff();
                     }
                 }
             } else {
