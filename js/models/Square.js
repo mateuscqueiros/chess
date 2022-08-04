@@ -14,9 +14,9 @@ class Square {
         this.piece = null;
         this.isHighlighted = false;
         this.isCaptureHighlighted = false;
+        this.notation = this.toNotation();
 
         this.element.addEventListener("click", e => {
-
             if (this.board.selected) {
                 if (this.isHighlighted || this.isCaptureHighlighted) {
                     if (this.isCaptureHighlighted) {
@@ -70,6 +70,7 @@ class Square {
                     this.controller.turnHighlightOff();
                     this.addHighlight()
                     this.piece.highlightMovement();
+                    console.log(this.board.selected.piece)
                 } else {
                     // Desselecionar
                     this.board.selected = null;
@@ -91,10 +92,6 @@ class Square {
         return tds[this.coords[0]];
     }
 
-    toggleHighlight() {
-        this.element.classList.toggle("h-move");
-        this.isHighlighted = !this.isHighlighted;
-    }
     removeHighlight() {
         this.element.classList.remove("h-move");
         this.isHighlighted = false;
@@ -105,11 +102,6 @@ class Square {
         this.isHighlighted = true;
     }
 
-    toggleCapture() {
-        this.element.classList.toggle("h-capture");
-        this.isCaptureHighlighted = !this.isHighlighted;
-
-    }
     removeCapture() {
         this.element.classList.remove("h-capture");
         this.isCaptureHighlighted = false;
