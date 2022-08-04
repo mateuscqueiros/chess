@@ -166,7 +166,6 @@ class PiecesMovements {
 
     }
     static horse = (self) => {
-        self.movements = [];
         let c = self.square.column;
         let r = self.square.row;
         let p = [
@@ -203,7 +202,6 @@ class PiecesMovements {
         }
     }
     static rook = (self) => {
-
     }
     static bishop = (self) => {
 

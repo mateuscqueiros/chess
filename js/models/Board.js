@@ -48,32 +48,37 @@ class Controller {
     }
 
     populateNewBoard() {
-        this.piecesController.createNewPiece("king", "white", [7, 3]);
-        this.piecesController.createNewPiece("queen", "white", [7, 4]);
-        this.piecesController.createNewPiece("bishop", "white", [7, 5]);
-        this.piecesController.createNewPiece("horse", "white", [7, 6]);
-        this.piecesController.createNewPiece("rook", "white", [7, 7]);
 
-        this.piecesController.createNewPiece("rook", "white", [7, 0]);
+        // for (let i = 0; i <= 7; i++) {
+        //     this.piecesController.createNewPiece("pawn", "black", [1, i]);
+        // }
+
+        // for (let i = 0; i <= 7; i++) {
+        //     this.piecesController.createNewPiece("pawn", "white", [6, i]);
+        // }
+
+        // this.piecesController.createNewPiece("king", "white", [3, 1]);
+        // this.piecesController.createNewPiece("horse", "white", [5, 5]);
+        // this.piecesController.createNewPiece("queen", "white", [7, 4]);
+        // this.piecesController.createNewPiece("bishop", "white", [7, 5]);
+        // this.piecesController.createNewPiece("rook", "white", [7, 7]);
+
+        this.piecesController.createNewPiece("rook", "white", [5, 5]);
         this.piecesController.createNewPiece("horse", "white", [7, 1]);
-        this.piecesController.createNewPiece("bishop", "white", [7, 2]);
+        // this.piecesController.createNewPiece("bishop", "white", [7, 2]);
 
-        for (let i = 0; i <= 7; i++) {
-            this.piecesController.createNewPiece("pawn", "white", [6, i]);
-        }
 
-        this.piecesController.createNewPiece("king", "black", [0, 4]);
-        this.piecesController.createNewPiece("queen", "black", [0, 3]);
-        this.piecesController.createNewPiece("bishop", "black", [0, 5]);
-        this.piecesController.createNewPiece("horse", "black", [0, 6]);
-        this.piecesController.createNewPiece("rook", "black", [0, 7]);
-        this.piecesController.createNewPiece("rook", "black", [0, 0]);
-        this.piecesController.createNewPiece("horse", "black", [0, 1]);
-        this.piecesController.createNewPiece("bishop", "black", [0, 2]);
 
-        for (let i = 0; i <= 7; i++) {
-            this.piecesController.createNewPiece("pawn", "black", [1, i]);
-        }
+        // this.piecesController.createNewPiece("horse", "black", [0, 6]);
+        // this.piecesController.createNewPiece("king", "black", [0, 4]);
+        // this.piecesController.createNewPiece("queen", "black", [0, 3]);
+        // this.piecesController.createNewPiece("bishop", "black", [0, 5]);
+        // this.piecesController.createNewPiece("rook", "black", [0, 7]);
+        // this.piecesController.createNewPiece("rook", "black", [0, 0]);
+        // this.piecesController.createNewPiece("horse", "black", [0, 1]);
+        // this.piecesController.createNewPiece("bishop", "black", [0, 2]);
+
+
 
     }
 
