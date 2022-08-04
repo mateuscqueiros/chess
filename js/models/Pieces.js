@@ -8,7 +8,7 @@ class PiecesController {
 
     findByPosition(x, y) {
         let p = this.board.filter(el => {
-            return el.coords[0] === x && el.coords[1] === y;
+            return el.column === x && el.row === y;
         })[0]
 
         return p;
@@ -93,6 +93,14 @@ class PiecesController {
                 return piece;
         }
     }
+
+    addAnotation(piece, square) {
+        let note = `${piece.typeNotation + square.toNotation()}`;
+        this.anotations.push(note);
+        this.anotations.forEach(note => {
+            console.log(note)
+        })
+    }
 }
 
 class PiecesMovements {
@@ -162,6 +170,46 @@ class PiecesMovements {
     }
     static queen = (self) => {
 
+        let initialPositions = [
+            (square) => {
+                return self.squareAt(square.column - 1, square.row - 1);
+            },
+            (square) => {
+                return self.squareAt(square.column + 1, square.row - 1);
+            },
+            (square) => {
+                return self.squareAt(square.column + 1, square.row + 1);
+            },
+            (square) => {
+                return self.squareAt(square.column - 1, square.row + 1);
+            },
+            (square) => {
+                return self.squareAt(square.column, square.row - 1)
+            },
+            (square) => {
+                return self.squareAt(square.column + 1, square.row)
+            },
+            (square) => {
+                return self.squareAt(square.column, square.row + 1)
+            },
+            (square) => {
+                return self.squareAt(square.column - 1, square.row)
+            }
+        ]
+
+        initialPositions.forEach((p, index) => {
+            let obsSquare = p(self.square);
+            while (obsSquare) {
+                self.movements.push(obsSquare);
+                let nextSquare = self.squareAt(p(obsSquare)?.column, p(obsSquare)?.row);
+                if (obsSquare.piece) {
+                    obsSquare = null;
+                } else {
+                    obsSquare = nextSquare;
+                }
+
+            }
+        })
     }
     static horse = (self) => {
         let c = self.square.column;
@@ -184,23 +232,66 @@ class PiecesMovements {
         })
     }
     static rook = (self) => {
-        let c = self.square.column;
-        let r = self.square.row;
-        let p = [
-            self.squareAt(c, r - 1),
-            self.squareAt(c + 1, r),
-            self.squareAt(c, r + 1),
-            self.squareAt(c - 1, r),
+
+        let initialPositions = [
+            (square) => {
+                return self.squareAt(square.column, square.row - 1)
+            },
+            (square) => {
+                return self.squareAt(square.column + 1, square.row)
+            },
+            (square) => {
+                return self.squareAt(square.column, square.row + 1)
+            },
+            (square) => {
+                return self.squareAt(square.column - 1, square.row)
+            },
         ]
 
-        p.forEach(pos => {
-            if (pos) {
-                self.movements.push(pos)
+        initialPositions.forEach((p, index) => {
+            let obsSquare = p(self.square);
+            while (obsSquare) {
+                self.movements.push(obsSquare);
+                let nextSquare = self.squareAt(p(obsSquare)?.column, p(obsSquare)?.row);
+                if (obsSquare.piece) {
+                    obsSquare = null;
+                } else {
+                    obsSquare = nextSquare;
+                }
+
             }
         })
     }
     static bishop = (self) => {
 
+        let initialPositions = [
+            (square) => {
+                return self.squareAt(square.column - 1, square.row - 1);
+            },
+            (square) => {
+                return self.squareAt(square.column + 1, square.row - 1);
+            },
+            (square) => {
+                return self.squareAt(square.column + 1, square.row + 1);
+            },
+            (square) => {
+                return self.squareAt(square.column - 1, square.row + 1);
+            },
+        ]
+
+        initialPositions.forEach((p, index) => {
+            let obsSquare = p(self.square);
+            while (obsSquare) {
+                self.movements.push(obsSquare);
+                let nextSquare = self.squareAt(p(obsSquare)?.column, p(obsSquare)?.row);
+                if (obsSquare.piece) {
+                    obsSquare = null;
+                } else {
+                    obsSquare = nextSquare;
+                }
+
+            }
+        })
     }
     static king = (self) => {
         // Checar se não estará em cheque
@@ -248,18 +339,12 @@ class Piece {
 
         this.square.isOcuppied = true;
         this.movements = [];
-
     }
 
     checkDangerousSquares() {
 
-
-
         this.isTargeted = false;
         this.isTargetedBy = [];
-
-        // piece.isTargeted = true;
-        // piece.isTargetedBy.push(p);
 
         const opponentPieces = this.controller.pieces.filter(p => {
             return p.color !== this.color && !p.isCaptured;
@@ -268,30 +353,16 @@ class Piece {
         opponentPieces.forEach(opPiece => {
             opPiece.movements.forEach(opMov => {
                 if (opMov.id === this.square.id) {
-                    console.log(this.name, "em", this.square.toNotation(), "ameaçado por", opPiece.name, "de", opPiece.square.toNotation());
+                    console.log("[", this.color.toUpperCase(), "]", this.name, "em", this.square.toNotation(), "ameaçado por", opPiece.name, "de", opPiece.square.toNotation());
                     this.isTargeted = true;
                     this.isTargetedBy.push(opPiece);
                     opPiece.isTargeting.push(this);
                 }
             })
         })
-
-        // 1. Percorrer todas as peças adversárias
-        // 2. Percorrer cada movimento de cada peça aversária
-        // 3. Encontrar a que ataca esse square
-
     }
 
     highlightMovement() {
-
-
-        // Checar se alguma peça de outra cor tem movimento em comum. -> highlightMovements
-        // Se tiver, adicionar danger no quadrado do meu movimento
-        // Se não tiver, continuar
-
-        // Para o rei:
-        // 1. Casa de destino não pode estar marcada
-        // 2. Casa  de destino com peça adversária não pode estar marcada
 
         if (this.movements.length > 0) {
             this.movements.forEach(mov => {
@@ -299,8 +370,6 @@ class Piece {
                     // Se existir e forem de cores diferentes
                     if (mov.piece.color !== this.color) {
                         mov.addCapture();
-                    } else {
-                        console.log("De mesma cor")
                     }
                 } else {
                     // Casa vazia
@@ -386,6 +455,7 @@ class Piece {
 class King extends Piece {
     constructor(pieceName, img, color, square, board, controller, type) {
         super(pieceName, img, color, square, board, controller, type);
+        this.typeNotation = "K";
         this.calculateMovements = () => PiecesMovements.king(this);
         this.calculateMovements();
     }
@@ -394,6 +464,7 @@ class King extends Piece {
 class Queen extends Piece {
     constructor(pieceName, img, color, square, board, controller, type) {
         super(pieceName, img, color, square, board, controller, type);
+        this.typeNotation = "Q";
         this.calculateMovements = () => PiecesMovements.queen(this);
         this.calculateMovements();
     }
@@ -402,6 +473,7 @@ class Queen extends Piece {
 class Horse extends Piece {
     constructor(pieceName, img, color, square, board, controller, type) {
         super(pieceName, img, color, square, board, controller, type);
+        this.typeNotation = "N";
         this.calculateMovements = () => PiecesMovements.horse(this);
         this.calculateMovements();
     }
@@ -410,14 +482,19 @@ class Horse extends Piece {
 class Pawn extends Piece {
     constructor(pieceName, img, color, square, board, controller, type) {
         super(pieceName, img, color, square, board, controller, type);
+        this.typeNotation = "";
         this.calculateMovements = () => PiecesMovements.pawn(this);
         this.calculateMovements();
+    }
+    promote() {
+        console.log("Promovido")
     }
 }
 
 class Rook extends Piece {
     constructor(pieceName, img, color, square, board, controller, type) {
         super(pieceName, img, color, square, board, controller, type);
+        this.typeNotation = "R";
         this.calculateMovements = () => PiecesMovements.rook(this);
         this.calculateMovements();
     }
@@ -426,6 +503,7 @@ class Rook extends Piece {
 class Bishop extends Piece {
     constructor(pieceName, img, color, square, board, controller, type) {
         super(pieceName, img, color, square, board, controller, type);
+        this.typeNotation = "B";
         this.calculateMovements = () => PiecesMovements.bishop(this);
         this.calculateMovements();
     }

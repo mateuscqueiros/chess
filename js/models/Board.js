@@ -1,10 +1,12 @@
 class Controller {
-    constructor() {
+    constructor(element) {
         this.board = [];
         this.selected = null;
         this.piecesController = new PiecesController(this);
         this.createNewBoard();
         this.populateNewBoard();
+        this.piecesController.createNewPiece("pawn", "black", [1, 5]);
+        this.element = element;
     }
 
     // Check if King is checked
@@ -24,12 +26,17 @@ class Controller {
             let t = trs[i];
             for (let j = 0; j < 8; j++) {
                 let td = document.createElement("td");
+                let img = document.createElement("div");
+                img.setAttribute("draggable", "draggable");
+                img.classList.add("img");
+                td.appendChild(img);
                 t.appendChild(td);
                 if (j === 0) {
                     let span = document.createElement("span");
                     span.innerHTML = tableHeadNumber;
                     span.classList.add("head-number-span");
                     td.classList.add("head-number");
+
                     td.appendChild(span);
                     tableHeadNumber -= 1;
                 }
@@ -49,34 +56,34 @@ class Controller {
 
     populateNewBoard() {
 
-        // for (let i = 0; i <= 7; i++) {
-        //     this.piecesController.createNewPiece("pawn", "black", [1, i]);
-        // }
+        for (let i = 0; i <= 7; i++) {
+            this.piecesController.createNewPiece("pawn", "black", [1, i]);
+        }
 
-        // for (let i = 0; i <= 7; i++) {
-        //     this.piecesController.createNewPiece("pawn", "white", [6, i]);
-        // }
+        for (let i = 0; i <= 7; i++) {
+            this.piecesController.createNewPiece("pawn", "white", [6, i]);
+        }
 
-        // this.piecesController.createNewPiece("king", "white", [3, 1]);
-        // this.piecesController.createNewPiece("horse", "white", [5, 5]);
-        // this.piecesController.createNewPiece("queen", "white", [7, 4]);
-        // this.piecesController.createNewPiece("bishop", "white", [7, 5]);
-        // this.piecesController.createNewPiece("rook", "white", [7, 7]);
+        this.piecesController.createNewPiece("king", "white", [7, 4]);
+        this.piecesController.createNewPiece("horse", "white", [7, 6]);
+        this.piecesController.createNewPiece("queen", "white", [7, 3]);
+        this.piecesController.createNewPiece("bishop", "white", [7, 5]);
+        this.piecesController.createNewPiece("rook", "white", [7, 7]);
 
-        this.piecesController.createNewPiece("rook", "white", [5, 5]);
+        this.piecesController.createNewPiece("rook", "white", [7, 0]);
         this.piecesController.createNewPiece("horse", "white", [7, 1]);
-        // this.piecesController.createNewPiece("bishop", "white", [7, 2]);
+        this.piecesController.createNewPiece("bishop", "white", [7, 2]);
 
 
 
-        // this.piecesController.createNewPiece("horse", "black", [0, 6]);
-        // this.piecesController.createNewPiece("king", "black", [0, 4]);
-        // this.piecesController.createNewPiece("queen", "black", [0, 3]);
-        // this.piecesController.createNewPiece("bishop", "black", [0, 5]);
-        // this.piecesController.createNewPiece("rook", "black", [0, 7]);
-        // this.piecesController.createNewPiece("rook", "black", [0, 0]);
-        // this.piecesController.createNewPiece("horse", "black", [0, 1]);
-        // this.piecesController.createNewPiece("bishop", "black", [0, 2]);
+        this.piecesController.createNewPiece("horse", "black", [0, 6]);
+        this.piecesController.createNewPiece("king", "black", [0, 4]);
+        this.piecesController.createNewPiece("queen", "black", [0, 3]);
+        this.piecesController.createNewPiece("bishop", "black", [0, 5]);
+        this.piecesController.createNewPiece("rook", "black", [0, 7]);
+        this.piecesController.createNewPiece("rook", "black", [0, 0]);
+        this.piecesController.createNewPiece("horse", "black", [0, 1]);
+        this.piecesController.createNewPiece("bishop", "black", [0, 2]);
 
 
 

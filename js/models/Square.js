@@ -49,8 +49,10 @@ class Square {
 
                     } else {
                         // Mover
-                        this.board.selected.piece.moveTo(this.column, this.row);
+                        let selectedPiece = this.board.selected.piece;
+                        selectedPiece.moveTo(this.column, this.row);
                         this.controller.turnHighlightOff();
+                        this.controller.addAnotation(selectedPiece, this.controller.findByPosition(this.column, this.row))
                         this.board.selected = null;
                     }
                 } else {
@@ -81,7 +83,7 @@ class Square {
     }
 
     toNotation() {
-        const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+        const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
         return `${letters[this.column]}${7 - this.row + 1}`;
     }
@@ -98,8 +100,10 @@ class Square {
     }
 
     addHighlight() {
-        this.element.classList.add("h-move");
-        this.isHighlighted = true;
+        if (!this.piece) {
+            this.element.classList.add("h-move");
+            this.isHighlighted = true;
+        }
     }
 
     removeCapture() {
@@ -124,10 +128,9 @@ class Square {
         this.image = img;
     }
 
-
     set image(img) {
         this.img = img;
-        this.element.style.backgroundImage = `url(${img})`;
+        this.element.childNodes[0].style.backgroundImage = `url(${img})`;
     }
 
     get image() {

@@ -30,17 +30,38 @@ table tr td {
     position: relative;
     width: 12.5%;
     height: 12.5%;
-    background-size: 75%;
-    background-position: center;
-    background-repeat: no-repeat;
 }
 
-table tr td.h-move {
-    background-color: rgba(0, 0, 255, 0.199) !important;
+table tr td.h-move::before {
+    content: "";
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 table tr td.h-capture {
     background-color: rgba(255, 0, 0, 0.281) !important;
+}
+
+table tr td .img {
+    width: 75%;
+    height: 75%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-size: 95%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+table tr td img[src=""] {
+    display: none;
 }
 
 table tr td.head-number span.head-number-span {
